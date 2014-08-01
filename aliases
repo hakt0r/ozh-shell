@@ -1,0 +1,139 @@
+#!/bin/sh
+return
+_copyright(){ echo "
+  ozh lightweight shell extensions
+  2008-2014 - anx @ ulzq de (Sebastian Glaser)
+  Licensed under GNU GPL v3"; }
+_license(){ echo "
+  ozh is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ozh is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this software; see the file COPYING.  If not, write to
+  the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+  Boston, MA 02111-1307 USA
+
+  http://www.gnu.org/licenses/gpl.html"; }
+
+alias Web="chromium-browser"
+alias Google="chromium-browser 'http://www.google.de/?q=$*'"
+
+which most >/dev/null 2>&1 && {
+  PAGER="most"
+  export PAGER
+  alias less=$PAGER; }
+
+alias g=gnome-open
+alias x=xdg-open
+alias lsip='sudo lsof -i -P -n'
+alias lsig='sudo lsof -i -P -n| grep'
+alias lsi='sudo lsof -i -P'
+alias rzsh='echo deprecated, moved to \"sz\".; sz'
+alias psg='ps ax |grep -v "grep"|grep -i'
+alias pwgen='pwgen -y'
+alias svim='sudo vim'
+alias svi='svim'
+alias la="ls -lah --color=auto"
+alias ll="ls -lh --color=auto"
+alias l="ls -Fsh --color=auto"
+alias ls="ls --color=auto"      # people are used to it, so...
+alias df='df -h'
+alias du='du -h'
+alias duc='du -sch ./*'
+alias dus='du -h|sort -n'
+alias ssa='ss -ap' #its the politically uncorrect alias ;)
+alias sst='ss -tpa'
+alias ssu='ss -upa'
+alias top3='ps -A --sort pcpu --format pcpu,comm |tail -n 3| sort -r'
+alias ppu='ps hax -o user | sort | uniq -c' #processes per user
+
+alias ge='grep-excuses'
+alias dbp='dpkg-buildpackage'
+alias su='sudo -s'
+alias tzx='tar zxvf'
+alias tjx='tar jxvf'
+alias tzc='tar zvc'
+alias tjc='tar jvc'
+alias ssh='ssh -4 -C'
+alias hgrep='history|grep -i' #courtesey of the mighty gh0sts
+
+alias cpv="rsync -proghb --backup-dir=/tmp/rsync -e /dev/null --progress --"
+alias ez='vim ~/.zshrc'
+alias mk=popd
+alias ozh-update='~/.ozh/update'
+
+if $OZ_SHELL_GLOBAL_ALIASES;then
+  # some global aliases
+  alias -g ...='../..'
+  alias -g ....='../../..'
+  alias -g .....='../../../..'
+  alias -g CA="2>&1 | cat -A"
+  alias -g C='| wc -l'
+  alias -g D="DISPLAY=:0.0"
+  alias -g DN=/dev/null
+  alias -g ED="export DISPLAY=:0.0"
+  alias -g EG='|& egrep'
+  alias -g EH='|& head'
+  alias -g EL='|& less'
+  alias -g ELS='|& less -S'
+  alias -g ETL='|& tail -20'
+  alias -g ET='|& tail'
+  alias -g F=' | fmt -'
+  alias -g G='| grep'
+  alias -g EG='| egrep'
+  alias -g H='| head'
+  alias -g HL='|& head -20'
+  alias -g Sk="*~(*.bz2|*.gz|*.tgz|*.zip|*.z)"
+  alias -g LL="2>&1 | less"
+  alias -g L="| less"
+  alias -g LS='| less -S'
+  alias -g MM='| most'
+  alias -g M='| more'
+  alias -g NE="2> /dev/null"
+  alias -g NS='| sort -n'
+  alias -g NUL="> /dev/null 2>&1"
+  alias -g PIPE='|'
+  alias -g RNS='| sort -nr'
+  alias -g S='| sort'
+  alias -g TL='| tail -20'
+  alias -g T='| tail'
+  alias -g TF='|tail -f'
+  alias -g US='| sort -u'
+  alias -g VM=/var/log/messages
+  alias -g X0G='| xargs -0 egrep'
+  alias -g X0='| xargs -0'
+  alias -g XG='| xargs egrep'
+  alias -g X='| xargs'
+fi
+if $OZ_SHELL_SUFFIX_ALIASES;then
+  # now for some suffix aliases
+  alias -s html=vim
+  alias -s com=w3m
+  alias -s org=w3m
+  alias -s de=w3m
+  alias -s php=vim
+fi
+
+alias "grepp"="grep -P" # perl grep
+alias "dug"="du -h . 2>/dev/null | grep -P '^[0-9.]+G'" # du filtered for gigabytes
+
+newalias(){
+  echo -n "Explain!: ";read HELP
+  echo -e creating and comitting new alias $1 = $2 \n\t "$HELP"
+  cd $HOME
+  INS=$(cat $OZH/aliases | grep -n dynamic_insert | tr : ' ' | awk '{print $1}')
+  ROW=$(wc -l $OZH/aliases|awk '{print $1}')
+  FOO=$(( $ROW - $INS ))
+  ALI=$(head $OZH/aliases -n $INS;echo "alias \"$1\"=\"$2\" # $HELP";tail $OZH/aliases -n $FOO)
+  echo $ALI>$OZH/aliases;
+  echo $HELP; }
+_newalias_help(){ echo "[1:alias 2:realname] add a new alias to $OZH/aliases"; }
+
+test -f "$OZH/aliases" && . "$OZH/aliases"

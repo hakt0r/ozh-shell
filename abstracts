@@ -1,0 +1,103 @@
+#!/bin/sh
+
+_copyright(){ echo "
+  ozh lightweight shell extensions
+  2008-2014 - anx @ ulzq de (Sebastian Glaser)
+  Licensed under GNU GPL v3"; }
+_license(){ echo "
+  ozh is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ozh is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this software; see the file COPYING.  If not, write to
+  the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+  Boston, MA 02111-1307 USA
+
+  http://www.gnu.org/licenses/gpl.html"; }
+
+######################################################################################## Abstracts #
+
+_etcid(){
+  if os_ubuntu || os_debian;
+  then [ $(whoami) = 'root' ] && service $1 $2 || sudo service $1 $2;
+  else [ $(whoami) = 'root' ] && "/etc/init.d/$1" $2 || sudo "/etc/init.d/$1" $2; fi }
+
+Enmod(){
+  case $1 in
+    '-a') app_exists a2enmod && a2enmod $2;;
+    '-o') shift;ozmod -e $@;;
+       *) modprobe $1;;
+  esac;}
+
+Dismod(){
+  case $1 in
+    "-a") app_exists a2enmod && a2dismod $2;;
+    "-o") shift;ozmod -d $@;;
+       *) rmmod $1;;
+  esac;}
+
+Start(){
+  case $1 in
+    "-a") [ -f "$(which apache2ctl)" ] && sudo apache2ctl start;;
+    "-t") taskd $2 start;;
+       *) _etcid $1 start;;
+  esac;}
+
+Stop(){
+  case $1 in
+    "-a") [ -f "$(which apache2ctl)" ] && sudo apache2ctl stop;;
+    "-t") taskd $2 stop;;
+       *) _etcid $1 stop;;
+  esac;}
+
+Restart(){
+  case $1 in
+    "-a") [ -f "$(which apache2ctl)" ] && sudo apache2ctl restart;;
+    "-t") taskd $2 restart;;
+       *) _etcid $1 restart;;
+  esac;}
+
+Reload(){
+  case $1 in
+    "-a") [ -f "$(which apache2ctl)" ] && sudo apache2ctl graceful;;
+    "-t") taskd $2 reload;;
+       *) _etcid $1 reload;;
+  esac;}
+
+ForceReload(){
+  case $1 in
+    "-a") [ -f "$(which apache2ctl)" ] && sudo apache2ctl force-reload;;
+    "-t") taskd $2 force-reload;;
+       *) _etcid $1 force-reload;;
+  esac;}
+
+Log(){
+  if [ `whoami` = "root" ];
+    then sudo=""
+    else sudo="sudo "
+  fi
+  local filter="cat"
+  case "$2" in
+  "-h") filter="head";;
+  "-f") filter="tail -f";;
+  "-t") filter="tail";;
+  "-m") filter="more";;
+  esac
+  case "$1" in
+    "-git") cmd="git log | $filter";;
+    "-svn") cmd="svn log | $filter";;
+    "-s")   cmd="$sudo $filter /var/log/syslog";;
+    "-a")   cmd="$sudo $filter /var/log/apache2/access.log";;
+    "-ae")  cmd="$sudo $filter /var/log/apache2/error.log";;
+    "-t")   cmd="taskd $2 get log | $filter";;
+    "-te")  cmd="taskd $2 get err | $filter";;
+    *)   cmd="$sudo $filter /var/log/$1";;
+  esac;
+  eval "$cmd";}

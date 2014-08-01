@@ -1,0 +1,62 @@
+#!/bin/sh
+
+_copyright(){ echo "
+  ozh lightweight shell extensions
+  2008-2014 - anx @ ulzq de (Sebastian Glaser)
+  Licensed under GNU GPL v3"; }
+_license(){ echo "
+  ozh is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ozh is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this software; see the file COPYING.  If not, write to
+  the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+  Boston, MA 02111-1307 USA
+
+  http://www.gnu.org/licenses/gpl.html"; }
+
+_apt(){
+  _pkg_post_install(){
+    type rehash       >/dev/null 2>&1 && rehash
+    type zol_gen_path >/dev/null 2>&1 && rehash; }
+
+  local apt_available=false
+  local apt_metalink=false
+  local apt_aptitude=false
+  local apt_fast=false
+  local get=apt-get
+  local run=apt-get
+  local sudo=
+
+  which apt-get      >/dev/null 2>/dev/null && { apt=apt-get;      apt_available=true; }
+  which aptitude     >/dev/null 2>/dev/null && { apt=aptitude;     apt_aptitude=true; }
+  which apt-fast     >/dev/null 2>/dev/null && { apt=apt-fast;     apt_fast=true; }
+  which apt-metalink >/dev/null 2>/dev/null && { apt=apt-metalink; apt_metalink=true; }
+  which sudo         >/dev/null 2>/dev/null && { test "$USER" = "root" || sudo=sudo; }
+
+  if $apt_available; then
+    $apt_aptitude && { get=aptitude; run=aptitude; }
+    $apt_metalink && { run=apt-metalink; }
+    eval "
+      agi(){ $sudo $run install \$@; _pkg_post_install; }
+      acs(){ $run search \$@; }
+      acp(){ apt-cache policy \$@; }
+      acsh(){ $run show \$@; }
+      adg(){ $sudo $get update; $sudo $run dist-upgrade \$@; }
+      agar(){ $sudo $run autoremove \$@; }
+      agp(){ $sudo $run purge \$@; }
+      agr(){ $sudo $run remove \$@; }
+      agu(){ $sudo $run update \$@; }
+      agug(){ $sudo $get update; $sudo $run upgrade \$@; }
+      asu(){ $sudo $get update \$@; }
+      asu(){ $sudo $get update; $sudo $run -y safe-upgrade \$@; }
+    "; fi; }
+
+[ -n "OZH_REQUIRE" ] && _apt
