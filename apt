@@ -23,9 +23,8 @@ _license(){ echo "
   http://www.gnu.org/licenses/gpl.html"; }
 
 _apt(){
-  _pkg_post_install(){
-    type rehash       >/dev/null 2>&1 && rehash
-    type zol_gen_path >/dev/null 2>&1 && rehash; }
+  #  type rehash       >/dev/null 2>&1 && rehash
+  #  type zol_gen_path >/dev/null 2>&1 && rehash; }
 
   local apt_available=false
   local apt_metalink=false
@@ -45,7 +44,7 @@ _apt(){
     $apt_aptitude && { get=aptitude; run=aptitude; }
     $apt_metalink && { run=apt-metalink; }
     eval "
-      agi(){ $sudo $run install \$@; _pkg_post_install; }
+      agi(){ $sudo $run install \$@; oz hook run apt/postinstall 'agi::done' \"\$@\"; }
       acs(){ $run search \$@; }
       acp(){ apt-cache policy \$@; }
       acsh(){ $run show \$@; }
