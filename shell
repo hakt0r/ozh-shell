@@ -27,6 +27,9 @@ _license(){ echo "
   oz install +only +prefix shell zsh bash ash scm +lib abstracts aliases apt motd
   _setup; }
 
+[ ! -f "$OZH/hook/prompt/zzprompt" ] && {
+  oz hook set prompt zzprompt "_prompt_ozh"; }
+
 _ps_linux(){ cat "/proc/$$/cmdline" | tr "\00" ' ' | awk '{gsub(/^-/,"",$0);print $1;exit}'; }
 _ps_minop(){ ps -o pid,comm -p $$ | awk 'BEGIN{getline;getline;print $1}'; }
 _ps_me(){ ps -o pid,comm | awk '{if($1==1336){$1="";gsub(/^ /,"",$0);print $0}}'; }
@@ -65,8 +68,6 @@ $OZ_PROMPT_USER_COLOR$USER$R@$blue$HOST\
 $black$(dirname $pwd|tr \/ '\n'|cut -b 1|tr -d '\n')\
 $bgreen$(basename $pwd)$R> "; }
 
-# [ ! -f "$OZH/hook/prompt/zzprompt" ] && {
-oz hook set prompt zzprompt "_prompt_ozh" #; }
 
 _prompt(){ oz hook run prompt; }
 _prompt_escape(){ awk 'BEGIN{RS="\x1b"}{for(i=0;i<length($0)+1;i++){b=substr($0,0,i);e=substr($0,i+1);if(match(substr(b,i,1),/[a-zA-Z]/))break};printf "%s%s%s%s",s,b,q,e;s="\\[\x1b";q="\\]"}'; }
