@@ -3,6 +3,7 @@
 _copyright(){ echo "
   ozh lightweight shell extensions
   2008-2014 - anx @ ulzq de (Sebastian Glaser)
+  2008-2014 - fly @ ulzq de
   Licensed under GNU GPL v3"; }
 _license(){ echo "
   ozh is free software; you can redistribute it and/or modify
@@ -21,8 +22,6 @@ _license(){ echo "
   Boston, MA 02111-1307 USA
 
   http://www.gnu.org/licenses/gpl.html"; }
-
-alias rot13="tr a-zA-Z n-za-mN-ZA-M"
 
 wkill(){
   local HELP="$(_${0}_help)"
@@ -180,3 +179,77 @@ _ddv_help() echo "verbose dd with progressbar";; }
 
 ddvz() dd bs=4096000 if=$1 of=/dev/stdout | bzip2 | pv > $2; }
 _ddvz_help() echo "verbose dd with progressbar and bzip2 output"; }
+
+e(){ #extract files
+  local c e i
+  (($#)) || return
+  for i; do
+    c=''
+    e=1
+    if [[ ! -r $i ]]; then
+        echo "$0: file is unreadable: \`$i'" >&2
+        continue
+    fi
+    case $i in
+      *.tar.bz2 ) tar xvjf $1 ;;
+       *.tar.gz ) tar xvzf $1 ;;
+       *.tar.xz ) tar xvJf $1 ;;
+          *.tar ) tar xvf $1 ;;
+         *.tbz2 ) tar xvjf $1 ;;
+          *.tgz ) tar xvzf $1 ;;
+          *.rar ) unrar x $1 ;;
+           *.gz ) gunzip $1 ;;
+          *.bz2 ) bunzip2 $1 ;;
+          *.zip ) unzip $1 ;;
+            *.Z ) uncompress $1 ;;
+           *.7z ) 7z x $1 ;;
+           *.xz ) unxz $1 ;;
+          *.exe ) cabextract $1 ;;
+              * ) echo "$0: unrecognized file extension: \`$i'" >&2
+                 continue;;
+    esac
+    #command $c "$i"
+    #e=$??~W
+  done
+  return $e; }
+
+randompass(){ # generate random passwords
+  local n=1 i=1 PASS="" MATRIX="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVQXYZ.,;:-_#*+?=)(/&%$§!}][{@<>"
+  [ -z "$1" ] && length=12 || length=$1
+  [ -z "$2" ] && num=1 || num=$2
+  while [ ${i} -le $num ]; do
+    while [ ${n} -le $length ]; do
+      PASS="$PASS${MATRIX:$(($RANDOM%${#MATRIX})):1}"
+      n=$(($n + 1))
+    done
+    echo $PASS
+    n=1
+    PASS=""
+    i=$(($i + 1))
+  done; }
+
+## print hex value of a number
+hex(){ # PORTME
+  emulate -L zsh
+  if [[ -n "$1" ]]; then
+    printf "%x\n" $1
+  else
+    print 'Usage: hex <number-to-convert>'
+    return 1
+  fi; }
+
+## Some quick Perl-hacks aka /useful/ oneliner
+#bew() { perl -le 'print unpack "B*","'$1'"' }
+#web() { perl -le 'print pack "B*","'$1'"' }
+#hew() { perl -le 'print unpack "H*","'$1'"' }
+#weh() { perl -le 'print pack "H*","'$1'"' }
+#pversion()    { perl -M$1 -le "print $1->VERSION" } # i. e."pversion LWP -> 5.79"
+getlinks ()   { perl -ne 'while ( m/"((www|ftp|http):\/\/.*?)"/gc ) { print $1, "\n"; }' $* }
+gethrefs ()   { perl -ne 'while ( m/href="([^"]*)"/gc ) { print $1, "\n"; }' $* }
+getanames ()  { perl -ne 'while ( m/a name="([^"]*)"/gc ) { print $1, "\n"; }' $* }
+getforms ()   { perl -ne 'while ( m:(\</?(input|form|select|option).*?\>):gic ) { print $1, "\n"; }' $* }
+getstrings () { perl -ne 'while ( m/"(.*?)"/gc ) { print $1, "\n"; }' $*}
+getanchors () { perl -ne 'while ( m/«([^«»\n]+)»/gc ) { print $1, "\n"; }' $* }
+showINC ()    { perl -e 'for (@INC) { printf "%d %s\n", $i++, $_ }' }
+#vimpm ()      { vim `perldoc -l $1 | sed -e 's/pod$/pm/'` }
+#vimhelp ()    { vim -c "help $1" -c on -c "au! VimEnter *" }

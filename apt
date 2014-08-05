@@ -58,4 +58,36 @@ _apt(){
       asu(){ $sudo $get update; $sudo $run -y safe-upgrade \$@; }
     "; fi; }
 
+app_depend(){
+  app_exists $1 && return 0
+  if [ -x "$(which $1 2>/dev/null)" ]; then return 0 # exists
+  elif echo "$(which $1 2>/dev/null)" | grep -q aliased; then return 0 # exists
+  elif is_function $1; then return 0 # builtin
+  else
+    sudo=''
+    if [ $USER != "root" ];then
+      echo -n "DEPENDENCY $1 to install provide "
+      sudo echo -n "";echo
+      sudo='sudo'
+    fi
+    ozvrb "installing $1"
+    if os_x; then mcred add osx support... mfail;return 1;
+    elif os_ubuntu; then $sudo apt-get install -y $1  2>&1 >/dev/null && mok || mfail; rehash; return 0
+    elif os_debian; then $sudo apt-get install -y $1  2>&1 >/dev/null && mok || mfail; rehash; return 0
+    elif os_ios; then    $sudo apt-get install -e $1  2>&1 >/dev/null && mok || mfail; rehash; return 0
+    elif os_mcx || os_tinycore; then
+      if [ $(whoami) = "root" ]; then
+        sudo -u $TC_USER tce-load -wi $1 2>&1 >/dev/null && mok || mfail;
+        rehash;
+        return 0
+      else
+        tce-load -wi $1 2>&1 >/dev/null && mok || mfail;
+        rehash;
+        return 0;
+      fi
+    elif os_openwrt; then
+      $sudo opkg update && opkg install $1 && mok || mfail;
+      return 0;
+    else OS NOT SUPPORTED; mfail; return 1; fi;fi;}
+
 [ -n "OZH_REQUIRE" ] && _apt

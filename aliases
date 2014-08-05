@@ -3,6 +3,7 @@
 _copyright(){ echo "
   ozh lightweight shell extensions
   2008-2014 - anx @ ulzq de (Sebastian Glaser)
+  2008-2014 - fly @ ulzq de
   Licensed under GNU GPL v3"; }
 _license(){ echo "
   ozh is free software; you can redistribute it and/or modify
@@ -60,7 +61,7 @@ alias ppu='ps hax -o user | sort | uniq -c' #processes per user
 alias psg='ps ax |grep -v "grep"|grep -i'
 alias pwgen='pwgen -y'
 alias qsz='source ~/.zshrc 2>&1 > /dev/null'
-alias rzsh='echo deprecated, moved to \"sz\".; sz'
+alias rot13="tr a-zA-Z n-za-mN-ZA-M"
 alias ssa='ss -ap' #its the politically uncorrect alias ;)
 alias ssh='ssh -4 -C'
 alias ssh='ssh -C'
@@ -76,6 +77,7 @@ alias top3='ps -A --sort pcpu --format pcpu,comm |tail -n 3| sort -r'
 alias tzc='tar zvc'
 alias tzx='tar zxvf'
 alias Web="chromium-browser"
+alias wtd='while true; do'
 alias x=xdg-open
 
 if $OZ_SHELL_GLOBAL_ALIASES;then
