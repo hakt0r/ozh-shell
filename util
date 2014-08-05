@@ -23,25 +23,81 @@ _license(){ echo "
 
   http://www.gnu.org/licenses/gpl.html"; }
 
+[ -n "$OZH_HELP" ] && {
+  _blink_hdd_help(){ echo "[start,stop] spawns/kills hdd blinker. Uses sync so use with caution."; }
+  _ddv_help() echo "verbose dd with progressbar";; }
+  _ddvz_help() echo "verbose dd with progressbar and bzip2 output"; }
+  _edtoscript_help(){ echo "[1:(file)name] redirects stdin to $HOME/bin/name and opens it in $EDITOR"; }
+  _ftr_help(){ echo "[1:file 2:needle 3:replace] 'tr-moves' file"; }
+  _ltrim_help(){ echo "[1:string] remove spaces on left"; }
+  _mtop_help(){ echo "show top [1:count=3] mem-using processes"; }
+  _mvad_help(){ echo "move after download."; }
+  _mvtolower_help(){ echo "move all filenames to lower case in $PWD"; }
+  _newscript_help(){ echo "[1:(file)name] creates a new script in $HOME/bin with name"; }
+  _ops_help(){ echo "[1:file 2:needle] shows original occurences of needle"; }
+  _random_help(){ echo "random number bewtween #1 and #2"; }
+  _rmcaps_help(){ echo "remove capslock from xmodmap"; }
+  _rpw_help(){ echo "[1:length(default:8)] generate random password"; }
+  _sedit_help(){ echo "[1:filename] looks for filename in path or $HOME/bin and opens it in vim"; }
+  _sortlines_help(){ echo "Sort STDIN by lines"; }
+  _strPad_help(){ echo "pad a string with spaces using ptintf - #1:width"; }
+  _toscript_help(){ echo "[1:(file)name] redirects stdin to $HOME/bin/name"; }
+  _waitfor_help(){ _wpid_help; }
+  _wbz_help(){ echo "wget and bunzip";}
+  _wgz_help(){ echo "wget and gunzip"; }
+  _wkill_help(){ echo "kill and wait for PID\n  usage: wkill [-v] PID"; }
+  _wpid_help(){ echo "wait for PID to finish\n  usage: wpid [-v] [-t TIMEOUT in s] PID"; }; }
+
+ddv() dd bs=4096000 if=$1 of=/dev/stdout | pv > $2; }
+ddvz() dd bs=4096000 if=$1 of=/dev/stdout | bzip2 | pv > $2; }
+flx_addshow(){ echo "          - $*" >> ~/.flexget/config.yml; }
+ftr(){ mv $1 $(echo $1| tr "$2" "$3" ); }
+ltrim(){ echo "$@"|sed -e 's/^\s*//'; }
+mvtolower(){ for i in * ; do mv $i $(echo $i | tr '[A-Z]' '[a-z]') ; done; }
+ops(){ grep $2 $1 | cut -c2-18 | uniq -c; }
+rmcaps(){ DISPLAY=:0 xmodmap -e "remove lock = Caps_Lock"; }
+sedit(){ if [ -f $(which $1) ]; then vim $(which $1); else newscript $1; fi; }
+softmv(){ mv "$1" "$2"; ln -s "$2" "$1"; }
+sortlines(){ cat - | awk '{print length"\t"$0}'|sort -n|cut -f 2 -; }
+strPad(){ WIDTH=$1; shift; printf "%-${WIDTH}.${WIDTH}s" "$*"; }
+waitfor(){ return "$(wpid $@)"; }
+wbz(){ wget -q0 - "$1" | tar jxvf -; }
+wgz(){ wget -q0 - "$1" | tar zxvf -; }
+
+## Some quick Perl-hacks aka /useful/ oneliner
+#bew(){       perl -le 'print unpack "B*","'$1'"'; }
+#web(){       perl -le 'print pack "B*","'$1'"'; }
+#hew(){       perl -le 'print unpack "H*","'$1'"'; }
+#weh(){       perl -le 'print pack "H*","'$1'"'; }
+#pversion(){  perl -M$1 -le "print $1->VERSION"; } # i. e."pversion LWP -> 5.79"
+getlinks(){   perl -ne 'while ( m/"((www|ftp|http):\/\/.*?)"/gc ) { print $1, "\n"; }' $*; }
+gethrefs(){   perl -ne 'while ( m/href="([^"]*)"/gc ) { print $1, "\n"; }' $*; }
+getanames(){  perl -ne 'while ( m/a name="([^"]*)"/gc ) { print $1, "\n"; }' $*; }
+getforms(){   perl -ne 'while ( m:(\</?(input|form|select|option).*?\>):gic ) { print $1, "\n"; }' $*; }
+getstrings(){ perl -ne 'while ( m/"(.*?)"/gc ) { print $1, "\n"; }' $*; }
+getanchors(){ perl -ne 'while ( m/«([^«»\n]+)»/gc ) { print $1, "\n"; }' $*; }
+showINC(){    perl -e 'for (@INC) { printf "%d %s\n", $i++, $_ }'; }
+#vimpm(){     vim `perldoc -l $1 | sed -e 's/pod$/pm/'`; }
+#vimhelp(){   vim -c "help $1" -c on -c "au! VimEnter *"; }
+
 wkill(){
   local HELP="$(_${0}_help)"
   local VER=false
   while [ $# -gt 0 ]; do
     case "$1" in
-    "-h") mcred $HELP;mbr;return 0;;
+    "-h") printf "$bred$white$bold $HELP$RN";return 0;;
     "-v") VER=true;shift;;
        *) PID="$1";shift;;
     esac
   done
-  if [ -z "$PID" ]; then mcred $HELP;mbr;return 1;fi
-  if $VER; then mcyellow "wkill $PID... ";fi
+  if [ -z "$PID" ]; then printf "$bred$white$bold $HELP$RN";return 1;fi
+  if $VER; then printf "$byellow$black$bold wkill $PID... $R";fi
   while ps ax -o pid | sed 's/ //' | sed 's/$/:/' | sed 's/^/:/' | grep -q ":$1:"; do
-    if $VER; then mcyellow ".";fi
+    if $VER; then printf "$yellow.$R";fi
     kill -9 $PID >/dev/null 2>&1
     sleep 0.05
   done
-  if $VER; then mcgreen done;mbr;fi; }
-_wkill_help(){ echo "kill and wait for PID\n  usage: wkill [-v] PID"; }
+  if $VER; then _done;printf "$RN";fi; }
 
 wpid(){
   local HELP="$(_${0}_help)"
@@ -52,25 +108,24 @@ wpid(){
   local VER=false
   while [ $# -gt 0 ]; do
     case "$1" in
-    "-h") mcred $HELP;mbr;return 0;;
+    "-h") printf "$bred$white$bold $HELP$RN";return 0;;
     "-v") VER=true;shift;;
     "-t") TO=$2;shift 2;;
        *) PID="$1";shift;;
     esac
   done
-  if [ -z "$PID" ]; then mcred $HELP;mbr;return 1;fi
-  if $VER; then mcyellow "wpid($TO, $PID): ";fi
+  if [ -z "$PID" ]; then printf "$bred$white$bold $HELP$RN";return 1;fi
+  if $VER; then printf "$byellow$black$bold wpid($TO, $PID): $R ";fi
   while ps ax -o pid | sed 's/ //g' | sed 's/$/:/' | sed 's/^/:/' | grep -q ":$PID:"; do
-    if $VER; then mcyellow ".";fi
+    if $VER; then printf " $byellow$black$bold.$R ";fi
     sleep 0.1
     if [ $(date +%s) -gt $(($START + $TO)) ]; then
-      if $VER; then mcred fail;mbr;fi
+      if $VER; then _fail;fi
       return 1;
     fi
   done
-  if $VER; then mcgreen done;mbr;fi
+  if $VER; then _done;printf "$RN";fi
   return 0; }
-_wpid_help(){ echo "wait for PID to finish\n  usage: wpid [-v] [-t TIMEOUT in s] PID"; }
 
 stopwatch(){
   b=$(date +%s)
@@ -84,53 +139,13 @@ stopwatch(){
       sleep .1
   done; }
 
-rmcaps(){ DISPLAY=:0 xmodmap -e "remove lock = Caps_Lock"; }
-_rmcaps_help(){ echo "remove capslock from xmodmap"; }
-
-waitfor(){ return "$(wpid $@)"; }
-_waitfor_help(){ _wpid_help; }
-
 blink_hdd(){
-  f=/tmp/$(whoami)-hddblin
-  touch $f
+  local f="/tmp/$(whoami)-hddblin"
+  touch "$f"
   case "$1" in
-  start)
-    _blink_hdd_start $f &;;
-  stop)
-    rm $f;
-    rm "$f.k";;
+    start) ( while [ -f "$f" ]; do echo "l" > "$f.k"; sync; sleep 0.7; done; ) & ;;
+    stop ) rm $f; rm "$f.k";;
   esac; }
-_blink_hdd_help(){ echo "[start,stop] spawns/kills hdd blinker. Uses sync so use with caution."; }
-
-_blink_hdd_start(){
-   f=$1
-   while [ -f $f ]; do
-     echo "l" > "$f.k";sync;sleep 0.7;
-   done; }
-_blink_hdd_start_help(){ echo "do not invoke directly. use blink_hdd instead."; }
-
-wgz(){ wget -q0 - "$1" | tar zxvf -; }
-_wgz_help(){ echo "wget and gunzip"; }
-
-wbz(){ wget -q0 - "$1" | tar jxvf -; }
-_wbz_help(){ echo "wget and bunzip";}
-
-rpw(){
-  test -z "$1" && n=8 || n=$1
-  strings /dev/urandom | grep -o '[[:alnum:]][[:punct:]]'|head -n $1 | tr -d '\n'; }
-_rpw_help(){ echo "[1:length(default:8)] generate random password"; }
-
-ltrim(){ echo "$@"|sed -e 's/^\s*//'; }
-_ltrim_help(){ echo "[1:string] remove spaces on left"; }
-
-ftr(){ mv $1 $(echo $1| tr "$2" "$3" ); }
-_ftr_help(){ echo "[1:file 2:needle 3:replace] 'tr-moves' file"; }
-
-mvtolower(){ for i in * ; do mv $i $(echo $i | tr '[A-Z]' '[a-z]') ; done; }
-_mvtolower_help(){ echo "move all filenames to lower case in $PWD"; }
-
-ops(){ grep $2 $1 | cut -c2-18 | uniq -c; }
-_ops_help(){ echo "[1:file 2:needle] shows original occurences of needle"; }
 
 mtop(){ busybox top -bmn1 | busybox awk '
   BEGIN{c='$([ -z "$1" ] && echo 3 || echo $1)';getline;gsub(/[[:alpha:]]|:/,"");t=$1;getline;getline}
@@ -138,47 +153,27 @@ mtop(){ busybox top -bmn1 | busybox awk '
     sub(/}/,"",$9); sub(/{.*[:\.]/,"",$9);
     n[i]=$9;break}}
   END{for(i=0;i<c;i++)printf "%0.1f %s\n",m[i]/t*100,n[i];}'; }
-_mtop_help(){ echo "show top [1:count=3] mem-using processes"; }
-
-sortlines(){ cat - | awk '{print length"\t"$0}'|sort -n|cut -f 2 -; }
-_sortlines_help(){ echo "Sort STDIN by lines"; }
-
-strPad(){ WIDTH=$1; shift; printf "%-${WIDTH}.${WIDTH}s" "$*"; }
-_strPad_help(){ echo "pad a string with spaces using ptintf - #1:width"; }
 
 random(){
   if [ ! `expr $1 + 1 2> /dev/null` ]; then a=1; else a=$1; fi
   if [ ! `expr $2 + 1 2> /dev/null` ]; then b=65535; else b=$2; fi
   echo $(($(cat /dev/urandom| grep -aoP '[0-9]' | tr -d "\n" | head -c 3) % $2 + $1 )); }
-_random_help(){ echo "random number bewtween #1 and #2"; }
 
 newscript(){
   echo creating new script $1 in $HOME/bin/$1
   mkdir -p $HOME/bin;echo -e "#!/bin/sh\n" > $HOME/bin/$1;chmod 750 $HOME/bin/$1
   vim $HOME/bin/$1;
   rehash 2>/dev/null; }
-_newscript_help(){ echo "[1:(file)name] creates a new script in $HOME/bin with name"; }
 
 toscript(){
   echo "creating new script $1 from STDIN in $HOME/bin/$1" >&2
   mkdir -p $HOME/bin;echo -e "#!/bin/sh" > $HOME/bin/$1;chmod 750 $HOME/bin/$1
   cat - >> $HOME/bin/$1; rehash 2>/dev/null; }
-_toscript_help(){ echo "[1:(file)name] redirects stdin to $HOME/bin/name"; }
 
 edtoscript(){
   toscript $@
   $EDITOR $1
   rehash 2>/dev/null; }
-_edtoscript_help(){ echo "[1:(file)name] redirects stdin to $HOME/bin/name and opens it in $EDITOR"; }
-
-sedit(){ if [ -f $(which $1) ]; then vim $(which $1); else newscript $1; fi; }
-_sedit_help(){ echo "[1:filename] looks for filename in path or $HOME/bin and opens it in vim"; }
-
-ddv() dd bs=4096000 if=$1 of=/dev/stdout | pv > $2; }
-_ddv_help() echo "verbose dd with progressbar";; }
-
-ddvz() dd bs=4096000 if=$1 of=/dev/stdout | bzip2 | pv > $2; }
-_ddvz_help() echo "verbose dd with progressbar and bzip2 output"; }
 
 e(){ #extract files
   local c e i
@@ -213,6 +208,10 @@ e(){ #extract files
   done
   return $e; }
 
+rpw(){
+  test -z "$1" && n=8 || n=$1
+  strings /dev/urandom | grep -o '[[:alnum:]][[:punct:]]'|head -n $1 | tr -d '\n'; }
+
 randompass(){ # generate random passwords
   local n=1 i=1 PASS="" MATRIX="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVQXYZ.,;:-_#*+?=)(/&%$§!}][{@<>"
   [ -z "$1" ] && length=12 || length=$1
@@ -238,18 +237,20 @@ hex(){ # PORTME
     return 1
   fi; }
 
-## Some quick Perl-hacks aka /useful/ oneliner
-#bew() { perl -le 'print unpack "B*","'$1'"' }
-#web() { perl -le 'print pack "B*","'$1'"' }
-#hew() { perl -le 'print unpack "H*","'$1'"' }
-#weh() { perl -le 'print pack "H*","'$1'"' }
-#pversion()    { perl -M$1 -le "print $1->VERSION" } # i. e."pversion LWP -> 5.79"
-getlinks ()   { perl -ne 'while ( m/"((www|ftp|http):\/\/.*?)"/gc ) { print $1, "\n"; }' $* }
-gethrefs ()   { perl -ne 'while ( m/href="([^"]*)"/gc ) { print $1, "\n"; }' $* }
-getanames ()  { perl -ne 'while ( m/a name="([^"]*)"/gc ) { print $1, "\n"; }' $* }
-getforms ()   { perl -ne 'while ( m:(\</?(input|form|select|option).*?\>):gic ) { print $1, "\n"; }' $* }
-getstrings () { perl -ne 'while ( m/"(.*?)"/gc ) { print $1, "\n"; }' $*}
-getanchors () { perl -ne 'while ( m/«([^«»\n]+)»/gc ) { print $1, "\n"; }' $* }
-showINC ()    { perl -e 'for (@INC) { printf "%d %s\n", $i++, $_ }' }
-#vimpm ()      { vim `perldoc -l $1 | sed -e 's/pod$/pm/'` }
-#vimhelp ()    { vim -c "help $1" -c on -c "au! VimEnter *" }
+mvad(){ 
+  S1=0
+    S2=1
+    FIRST=1
+    while [ "$S1" != "$S2" ]; 
+    do
+   S1=`ls -l $1|cut -d' ' -f5`
+   sleep 5
+   S2=`ls -l $1|cut -d' ' -f5`
+   if [ $FIRST = 1 ]; then
+    echo -n file\'s still changing. Waiting.
+   else 
+    echo -n .
+   fi
+   FIRST=4
+    done
+    mv $1 $2; }

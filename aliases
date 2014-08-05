@@ -153,3 +153,5 @@ newalias(){
 _newalias_help(){ echo "[1:alias 2:realname] add a new alias to $OZH/aliases"; }
 
 test -f "$OZH/aliases" && . "$OZH/aliases"
+
+true

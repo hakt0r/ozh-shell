@@ -27,7 +27,7 @@ _license(){ echo "
 _etcid(){
   if os_ubuntu || os_debian;
   then [ $(whoami) = 'root' ] && service $1 $2 || sudo service $1 $2;
-  else [ $(whoami) = 'root' ] && "/etc/init.d/$1" $2 || sudo "/etc/init.d/$1" $2; fi }
+  else [ $(whoami) = 'root' ] && "/etc/init.d/$1" $2 || sudo "/etc/init.d/$1" $2; fi; }
 
 Enmod(){
   case $1 in
