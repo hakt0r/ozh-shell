@@ -74,10 +74,11 @@ has_git && {
   Stash(){ is_git && git stash $@; }
   Reset(){ is_git && git reset $@; }
   Branch(){ is_git && git branch $@; }
+  git_status_short(){ git status --porcelain | awk '/^ M/{m++}/^\?\?/{u++}END{printf "'"$byellow$white$bold"'%s'"$bred"'%s'"$R"'",m,u}'; }
   scm_longwidget(){
-    is_git && printf "$byellow$black${bold}g$red%s$black%s$R%s" $(git_dirname) $(git_branch) $(git_lastcommit_color); }
+    is_git && printf "$byellow$black${bold}g$red%s$black%s$R%s" $(git_dirname) $(git_branch) $(git_lastcommit_color) && git_status_short; }
   scm_shortwidget(){
-    is_git && printf "${bred}$(git_dirname)${yellow}$(git_branch)${R}${red}$(git_veryshortstat)${R}"; }
+    is_git && printf "${bred}$(git_dirname)${yellow}$(git_branch)${R}${red}$(git_veryshortstat)${R}" && git_status_short; }
 } || {
   scm_longwidget(){  printf "${bred}g$R"; }
   scm_shortwidget(){ printf "${bred}g$R"; }; }
