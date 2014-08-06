@@ -28,8 +28,8 @@ _license(){ echo "
   printf "$byellow                                  $R    ${byellow}  $R   ${byellow}   $R   ${byellow}    $R        ${byellow}   $RN"
   printf "$byellow                                   $R      ${byellow}   $R            ${byellow}   $R  ${byellow}   $RN"
   printf "$bblack$white ozh - one zhell to rule them all and in the darkness bind them $RN"
-  is_set cpu && printf "$bblack$white CPU $R \x1b[14G $(cpubar)\n"
-  is_set ctop && printf "$bblack$white TOP $R \x1b[14G $bblue $(ctop | tr '\n' ' ') $RN"
+  is_set cpu && printf "$bblack$white CPU $R \x1b[10G $(cpubar)\n"
+  is_set ctop && printf "$bblack$white TOP $R \x1b[10G $bblue ";ctop | tr '\n' ' '; printf " $RN"
   # too slow
   # printf "$bblack$white MEM $R \x1b[14G $bblue $(mtop | tr '\n' ' ') $RN"
   printf "$(oz printenv)\n"; }
