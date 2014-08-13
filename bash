@@ -22,13 +22,27 @@ _license(){ echo "
 
   http://www.gnu.org/licenses/gpl.html"; }
 
-OZ_SHELL='bash'; OZ_SHELL_COLOR=true;
+OZ_SHELL='bash'
+OZ_SHELL_COLOR=true
 
-HISTCONTROL=ignoredups:ignorespace
 shopt -s histappend
-HISTSIZE=1000
-HISTFILESIZE=2000
 shopt -s checkwinsize
+HISTSIZE=1000
+HISTCONTROL=ignoredups:ignorespace
+HISTFILESIZE=2000
 
-PROMPT_COMMAND='PS1=$(_prompt|_prompt_escape)'
+export INTERACTIVE=
+preexec_invoke_exec () {
+  [ -z "$INTERACTIVE" ] && return
+  [ -n "$COMP_LINE" -o "$BASH_COMMAND" = "$PROMPT_COMMAND" ] && return
+  local this_command=`history 1 | sed -e "s/^[ ]*[0-9]*[ ]*//g"`;
+  preexec "$this_command";
+  export INTERACTIVE=; true; }
+
+set -o functrace > /dev/null 2>&1
+shopt -s extdebug > /dev/null 2>&1
+trap 'preexec_invoke_exec' DEBUG
+
 PS1="\$ "
+PS2="$(oz hook run uprompt)"
+PROMPT_COMMAND='precmd; INTERACTIVE="yes"'

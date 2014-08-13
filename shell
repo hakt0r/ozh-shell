@@ -28,7 +28,10 @@ _license(){ echo "
   _setup; }
 
 [ ! -f "$OZH/hook/prompt/zzprompt" ] && {
-  oz hook set prompt zzprompt "_prompt_ozh"; }
+  oz hook set preexec aaclear 'printf "\x1b[0K\x1b[0m"'
+  oz hook set precmd  zzclear 'printf "\x1b[0m"'
+  oz hook set uprompt zzprompt "_prompt_ozh"
+  oz hook set prompt  zzprompt "_prompt_ozh_small"; }
 
 _ps_linux(){ cat "/proc/$$/cmdline" | tr "\00" ' ' | awk '{gsub(/^-/,"",$0);print $1;exit}'; }
 _ps_minop(){ ps -o pid,comm -p $$ | awk 'BEGIN{getline;getline;print $1}'; }
@@ -64,12 +67,17 @@ oz default TERMINAL xterm
 oz default PAGER less
 
 _prompt_ozh(){ local pwd=$(pwd);printf "\
-$bblue$(date +%H%M)$R\
-$OZ_PROMPT_USER_COLOR$USER$R@$blue$HOST\
-$black$(dirname "$pwd"|tr \/ '\n'|cut -b 1|tr -d '\n')\
-$bgreen$(basename "$pwd")$R> "; }
+$bblack$black$bold$(date +%H%M)\
+$OZ_PROMPT_USER_COLOR$USER$white@$blue$(printf $HOST|head -c3)\
+$bblack$yellow$(dirname "$pwd"|tr \/ '\n'|cut -b 1|tr -d '\n')\
+$white$bgreen$(basename "$pwd")$R> "; }
+_prompt_ozh_small(){ printf "$bblack$black$bold$(date +%H%M): $R "; }
 
 _prompt(){ oz hook run prompt; }
+_uprompt(){ oz hook run uprompt; }
 _prompt_escape(){ awk 'BEGIN{RS="\x1b"}{for(i=0;i<length($0)+1;i++){b=substr($0,0,i);e=substr($0,i+1);if(match(substr(b,i,1),/[a-zA-Z]/))break};printf "%s%s%s%s",s,b,q,e;s="\\[\x1b";q="\\]"}'; }
 
 _setup
+
+preexec(){ oz hook run preexec; }
+precmd(){  oz hook run precmd; }
