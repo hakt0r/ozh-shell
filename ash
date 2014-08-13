@@ -23,4 +23,5 @@ _license(){ echo "
   http://www.gnu.org/licenses/gpl.html"; }
 
 OZ_SHELL_COLOR=true
-PS1='$(_prompt|_prompt_escape)'
+PS1="$(oz hook run prompt|tail -n1|_prompt_escape)" # FIXME: if possible find a way to mak multiline prompt work
+PS2="$(oz hook run uprompt)"
