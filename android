@@ -1,0 +1,7 @@
+adb_tether_usb(){ adb shell " (
+ input keyevent 26
+ input keyevent 82
+ am start -a android.intent.action.MAIN -n com.android.settings/.TetherSettings
+ input tap 100 200
+ input keyevent KEYCODE_BACK
+) &"; }
