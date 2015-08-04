@@ -28,5 +28,5 @@ OZ_SHELL_GLOBAL_ALIASES=true
 OZ_SHELL_SUFFIX_ALIASES=true
 PS2="$(oz hook run uprompt)"
 
-_prompt_escape(){ awk 'BEGIN{RS="\x1b"}{for(i=0;i<length($0)+1;i++){b=substr($0,0,i);e=substr($0,i+1);if(match(substr(b,i,1),/[a-zA-Z]/))break};printf "%s%s%s%s",s,b,q,e;s="%{\x1b";q="%}"}'; }
+_prompt_escape(){ Bawk 'BEGIN{RS="\x1b"}{for(i=0;i<length($0)+1;i++){b=substr($0,0,i);e=substr($0,i+1);if(match(substr(b,i,1),/[a-zA-Z]/))break};printf "%s%s%s%s",s,b,q,e;s="%{\x1b";q="%}"}'; }
 

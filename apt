@@ -61,7 +61,7 @@ _apt(){
 app_depend(){
   app_exists $1 && return 0
   if [ -x "$(which $1 2>/dev/null)" ]; then return 0 # exists
-  elif echo "$(which $1 2>/dev/null)" | grep -q aliased; then return 0 # exists
+  elif echo "$(which $1 2>/dev/null)" | Bgrep -q aliased; then return 0 # exists
   elif is_function $1; then return 0 # builtin
   else
     sudo=''

@@ -23,19 +23,14 @@ _license(){ echo "
   http://www.gnu.org/licenses/gpl.html"; }
 
 [ -n "$OZH_INSTALL" ] && _install_shell(){
-  grep -q "^shell/shell\$" "$OZH/libs" 2>/dev/null || echo "shell/shell" >> "$OZH/libs"
+  Bgrep -q "^shell/shell\$" "$OZH/libs" 2>/dev/null || echo "shell/shell" >> "$OZH/libs"
   oz install +only +prefix shell zsh bash ash scm +lib abstracts aliases apt motd
+  oz hook set precmd zzprompt 'PS1=$(_prompt_ozh|_prompt_escape)'
   _setup; }
 
-[ ! -f "$OZH/hook/prompt/zzprompt" ] && {
-  oz hook set preexec aaclear 'printf "\x1b[0K\x1b[0m"'
-  oz hook set precmd  zzclear 'printf "\x1b[0m"'
-  oz hook set uprompt zzprompt "_prompt_ozh"
-  oz hook set prompt  zzprompt "_prompt_ozh_small"; }
-
-_ps_linux(){ cat "/proc/$$/cmdline" | tr "\00" ' ' | awk '{gsub(/^-/,"",$0);print $1;exit}'; }
-_ps_minop(){ ps -o pid,comm -p $$ | awk 'BEGIN{getline;getline;print $1}'; }
-_ps_me(){ ps -o pid,comm | awk '{if($1==1336){$1="";gsub(/^ /,"",$0);print $0}}'; }
+_ps_linux(){ cat "/proc/$$/cmdline" | tr "\00" ' ' | Bawk '{gsub(/^-/,"",$0);print $1;exit}'; }
+_ps_minop(){ ps -o pid,comm -p $$ | Bawk 'BEGIN{getline;getline;print $1}'; }
+_ps_me(){ ps -o pid,comm | Bawk '{if($1==1336){$1="";gsub(/^ /,"",$0);print $0}}'; }
 
 _setup(){ 
   export OZ_SHELL=$(basename "$(_ps_linux)")
@@ -45,11 +40,11 @@ _setup(){
   return 0; }
 
 title(){
-  if echo "$TERM" | grep -q "screen";then
+  if echo "$TERM" | Bgrep -q "screen";then
       echo -ne $'\033k'$1$'\033\\'
       echo -ne $'\033]0;'$2$'\a'
   elif os_tinycore;then echo -n''
-  elif echo "$TERM" | grep -q "xterm";then echo -ne "\033]0;$@\007";
+  elif echo "$TERM" | Bgrep -q "xterm";then echo -ne "\033]0;$@\007";
   else print -Pn "\e]2;$a $1 $2\a";fi; }
 
 export OZ_SHELL='c'
@@ -75,7 +70,7 @@ _prompt_ozh_small(){ printf "$bblack$black$bold$(date +%H%M): $R "; }
 
 _prompt(){ oz hook run prompt; }
 _uprompt(){ oz hook run uprompt; }
-_prompt_escape(){ awk 'BEGIN{RS="\x1b"}{for(i=0;i<length($0)+1;i++){b=substr($0,0,i);e=substr($0,i+1);if(match(substr(b,i,1),/[a-zA-Z]/))break};printf "%s%s%s%s",s,b,q,e;s="\\[\x1b";q="\\]"}'; }
+_prompt_escape(){ Bawk 'BEGIN{RS="\x1b"}{for(i=0;i<length($0)+1;i++){b=substr($0,0,i);e=substr($0,i+1);if(match(substr(b,i,1),/[a-zA-Z]/))break};printf "%s%s%s%s",s,b,q,e;s="\\[\x1b";q="\\]"}'; }
 
 _setup
 
