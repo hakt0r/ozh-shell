@@ -35,7 +35,7 @@ export INTERACTIVE=
 preexec_invoke_exec () {
   [ -z "$INTERACTIVE" ] && return
   [ -n "$COMP_LINE" -o "$BASH_COMMAND" = "$PROMPT_COMMAND" ] && return
-  local this_command=`history 1 | Bsed -e "s/^[ ]*[0-9]*[ ]*//g"`;
+  local this_command=$(history 1 | cut -f 4- -d ' ');
   preexec "$this_command";
   export INTERACTIVE=; true; }
 
