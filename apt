@@ -35,15 +35,14 @@ _apt(){
   local sudo=
 
   which apt-get      >/dev/null 2>/dev/null && { apt=apt-get;      apt_available=true; }
-  which aptitude     >/dev/null 2>/dev/null && { apt=aptitude;     apt_aptitude=true; }
+  which apt          >/dev/null 2>/dev/null && { apt=apt; get=apt; run=apt; }
   which apt-fast     >/dev/null 2>/dev/null && { apt=apt-fast;     apt_fast=true; }
   which apt-metalink >/dev/null 2>/dev/null && { apt=apt-metalink; apt_metalink=true; }
   which sudo         >/dev/null 2>/dev/null && { test "$USER" = "root" || sudo=sudo; }
-
   if $apt_available; then
-    $apt_aptitude && { get=aptitude; run=aptitude; }
     $apt_metalink && { run=apt-metalink; }
     eval "
+      unset agi acs acp acsh adg agar agp agr agu agug asu asu
       agi(){ $sudo $run install \$@; oz hook run apt/postinstall 'agi::done' \"\$@\"; }
       acs(){ $run search \$@; }
       acp(){ apt-cache policy \$@; }
