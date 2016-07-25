@@ -46,11 +46,12 @@ alias ez='vim ~/.zshrc'
 alias g=gnome-open
 alias ge='grep-excuses'
 alias Google="chromium-browser 'http://www.google.de/?q=$*'"
-alias hgrep='history|Bgrep -i' #courtesey of the mighty gh0sts
+alias hgrep='history | grep -i' #courtesey of the mighty gh0sts
 alias l="ls -Fsh --color=auto"
 alias la="ls -lah --color=auto"
 alias ll="ls -lh --color=auto"
 alias ls="ls --color=auto"      # people are used to it, so...
+lss(){ for i in $(ls); do du -ms $i; done | sort -n | awk '{ c=2; if($1+0>10)c=3; if($i+0>100)c=1; printf "\x1b[42;30;1;2m%40 s \x1b[0;1;2;330;4%im %8 i mb \x1b[0m\n",$2,c,$1}'; }
 alias lsi='sudo lsof -i -P'
 alias lsig='sudo lsof -i -P -n| grep'
 alias lsip='sudo lsof -i -P -n'

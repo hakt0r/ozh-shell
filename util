@@ -237,18 +237,18 @@ hex(){ # PORTME
     return 1
   fi; }
 
-mvad(){ 
+mvad(){
   S1=0
     S2=1
     FIRST=1
-    while [ "$S1" != "$S2" ]; 
+    while [ "$S1" != "$S2" ];
     do
    S1=`ls -l $1|cut -d' ' -f5`
    sleep 5
    S2=`ls -l $1|cut -d' ' -f5`
    if [ $FIRST = 1 ]; then
     echo -n file\'s still changing. Waiting.
-   else 
+   else
     echo -n .
    fi
    FIRST=4
