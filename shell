@@ -32,7 +32,7 @@ _ps_linux(){ cat "/proc/$$/cmdline" | tr "\00" ' ' | busybox awk '{gsub(/^-/,"",
 _ps_minop(){ ps -o pid,comm -p $$ | busybox awk 'BEGIN{getline;getline;print $1}'; }
 _ps_me(){ ps -o pid,comm | busybox awk '{if($1==1336){$1="";gsub(/^ /,"",$0);print $0}}'; }
 
-_setup(){ 
+_setup(){
   export OZ_SHELL=$(basename "$(_ps_linux)")
   [ "$OZ_SHELL" = "busybox" ] && OZ_SHELL=ash
   [ -f "$OZH/shell/$OZ_SHELL" ] && . "$OZH/shell/$OZ_SHELL"
@@ -61,16 +61,17 @@ oz default EDITOR vim
 oz default TERMINAL xterm
 oz default PAGER less
 
-_prompt_ozh(){ local pwd=$(pwd);printf "\
+_prompt_ozh(){ local pwd=$(pwd); printf "\
 $bblack$black$bold$(date +%H%M)\
-$OZ_PROMPT_USER_COLOR$USER$white@$blue$(printf $HOST|head -c3)\
+$OZ_PROMPT_USER_COLOR$USER$white@$blue$(printf "$HOST"|head -c3)\
 $bblack$yellow$(dirname "$pwd"|tr \/ '\n'|cut -b 1|tr -d '\n')\
 $white$bgreen$(basename "$pwd")$R> "; }
 _prompt_ozh_small(){ printf "$bblack$black$bold$(date +%H%M): $R "; }
 
 _prompt(){ oz hook run prompt; }
 _uprompt(){ oz hook run uprompt; }
-_prompt_escape(){ busybox awk 'BEGIN{RS="\x1b"}{for(i=0;i<length($0)+1;i++){b=substr($0,0,i);e=substr($0,i+1);if(match(substr(b,i,1),/[a-zA-Z]/))break};printf "%s%s%s%s",s,b,q,e;s="\\[\x1b";q="\\]"}'; }
+_prompt_escape(){ busybox awk '
+  BEGIN{RS="\x1b"}{for(i=0;i<length($0)+1;i++){b=substr($0,0,i);e=substr($0,i+1);if(match(substr(b,i,1),/[a-zA-Z]/))break};printf "%s%s%s%s",s,b,q,e;s="\\[\x1b";q="\\]"}'; }
 
 _setup
 
