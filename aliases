@@ -59,7 +59,7 @@ alias mk=popd
 alias ozh-update='~/.ozh/update'
 alias ozsh-update='~/.ozsh/update'
 alias ppu='ps hax -o user | sort | uniq -c' #processes per user
-alias psg='ps ax |Bgrep -v "grep"|Bgrep -i'
+alias psg='ps ax |busybox grep -v "grep"|busybox grep -i'
 alias pwgen='pwgen -y'
 alias qsz='source ~/.zshrc 2>&1 > /dev/null'
 alias rot13="tr a-zA-Z n-za-mN-ZA-M"
@@ -135,8 +135,8 @@ if $OZ_SHELL_SUFFIX_ALIASES;then
   alias -s php=vim
 fi
 
-alias "dug"="du -h . 2>/dev/null | Bgrep -P '^[0-9.]+G'" # du filtered for gigabytes
-alias "grepp"="Bgrep -P" # perl grep
+alias "dug"="du -h . 2>/dev/null | busybox grep -P '^[0-9.]+G'" # du filtered for gigabytes
+alias "grepp"="busybox grep -P" # perl grep
 alias "version"="echo 0.1" # echoes the version
 alias 'htidy'='tidy -m -utf8 --indent auto --indent-spaces 4 --wrap 0'
 alias 'ytd'='youtube-dl --console-title --max-quality 5'
@@ -145,8 +145,8 @@ newalias(){
   echo -n "Explain!: ";read HELP
   echo -e creating and comitting new alias $1 = $2 \n\t "$HELP"
   cd $HOME
-  INS=$(cat $OZH/aliases | Bgrep -n dynamic_insert | tr : ' ' | Bawk '{print $1}')
-  ROW=$(wc -l $OZH/aliases|Bawk '{print $1}')
+  INS=$(cat $OZH/aliases | busybox grep -n dynamic_insert | tr : ' ' | busybox awk '{print $1}')
+  ROW=$(wc -l $OZH/aliases|busybox awk '{print $1}')
   FOO=$(( $ROW - $INS ))
   ALI=$(head $OZH/aliases -n $INS;echo "alias \"$1\"=\"$2\" # $HELP";tail $OZH/aliases -n $FOO)
   echo $ALI>$OZH/aliases;

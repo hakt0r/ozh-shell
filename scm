@@ -34,12 +34,12 @@ git_make_bare(){
   popd; }
 
 git_lastcommit_color(){
-  git log --abbrev-commit | Bawk '
+  git log --abbrev-commit | busybox awk '
     /^commit/{printf "'"$byellow$white$bold"'"$2"'"$R"'"}
     /^Author:/{printf "'"$bblue$white$bold"'"$2"'"$R"'";exit(0)}'; }
 
 git_lastcommit(){
-  git log --abbrev-commit | Bawk '/^commit/{printf $2}/^Author:/{printf $2;exit(0)}'; }
+  git log --abbrev-commit | busybox awk '/^commit/{printf $2}/^Author:/{printf $2;exit(0)}'; }
 
 git_dirname(){
   # http://stackoverflow.com/questions/957928/is-there-a-way-to-get-to-the-git-root-directory-in-one-command
@@ -47,7 +47,7 @@ git_dirname(){
 
 git_branch(){
   git branch --no-color 2> /dev/null | \
-    Bsed '/^[^*]/d;s/* \(.*\)/(\1)/'; }
+    busybox sed '/^[^*]/d;s/* \(.*\)/(\1)/'; }
 
 git_veryshortstat(){
   echo $(git status -s | cut -c 2 | uniq -c) | tr -d ' '; }
@@ -74,7 +74,7 @@ has_git && {
   Stash(){ is_git && git stash $@; }
   Reset(){ is_git && git reset $@; }
   Branch(){ is_git && git branch $@; }
-  git_status_short(){ git status --porcelain | Bawk '/^ M/{m++}/^\?\?/{u++}END{printf "'"$byellow$white$bold"'%s'"$bred"'%s'"$R"'",m,u}'; }
+  git_status_short(){ git status --porcelain | busybox awk '/^ M/{m++}/^\?\?/{u++}END{printf "'"$byellow$white$bold"'%s'"$bred"'%s'"$R"'",m,u}'; }
   scm_longwidget(){
     is_git && printf "$byellow$black${bold}g$red%s$black%s$R%s" $(git_dirname) $(git_branch) $(git_lastcommit_color) && git_status_short; }
   scm_shortwidget(){
