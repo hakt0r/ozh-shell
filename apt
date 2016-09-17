@@ -2,7 +2,7 @@
 
 _copyright(){ echo "
   ozh lightweight shell extensions
-  2008-2014 - anx @ ulzq de (Sebastian Glaser)
+  2008-2016 - anx @ ulzq de (Sebastian Glaser)
   Licensed under GNU GPL v3"; }
 _license(){ echo "
   ozh is free software; you can redistribute it and/or modify

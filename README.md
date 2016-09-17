@@ -3,7 +3,7 @@ ozh-shell
 
 * ozh lightweight shell extensions
 * ozh reboot - shell module
-* 2008-2014 - anx @ ulzq de (Sebastian Glaser)
+* 2008-2016 - anx @ ulzq de (Sebastian Glaser)
 * Licensed under GNU GPL v3
 
 This module includes shell detection and color prompt tools.

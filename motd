@@ -2,7 +2,7 @@
 
 _copyright(){ echo "
   ozh lightweight shell extensions
-  2008-2014 - anx @ ulzq de (Sebastian Glaser)
+  2008-2016 - anx @ ulzq de (Sebastian Glaser)
   Licensed under GNU GPL v3"; }
 _license(){ echo "
   ozh is free software; you can redistribute it and/or modify
@@ -21,7 +21,10 @@ _license(){ echo "
   Boston, MA 02111-1307 USA
 
   http://www.gnu.org/licenses/gpl.html"; }
-[ -f "$OZH/motd" ] && . "$OZH/motd" || {
+
+[ -n "$OZH_INSTALL" ] && oz hook set init/post motd _ozh_motd
+
+_ozh_motd(){ [ -f "$OZH/motd" ] && . "$OZH/motd" || {
   printf "\n$bblue code.ulzq.de/ozh $byellow                $R                  ${byellow} $R   ${byellow}   $R  ${byellow}   $RN"
   printf "$byellow                                  $R   ${byellow}   $R   ${byellow}    $R   ${byellow}   $R   ${byellow}   $R  ${byellow}   $RN"
   printf "$byellow                                  $R    ${byellow}  $R   ${byellow}   $R   ${byellow}    $R        ${byellow}   $RN"
@@ -31,4 +34,4 @@ _license(){ echo "
   # is_set cpu && printf "$bblack$white CPU $R \x1b[10G $(cpubar)\n"
   # is_set ctop && printf "$bblack$white TOP $R \x1b[10G $bblue ";ctop | tr '\n' ' '; printf " $RN"
   # printf "$bblack$white MEM $R \x1b[14G $bblue $(mtop | tr '\n' ' ') $RN"
-  printf "$(oz printenv)\n"; }
+  printf "$(oz printenv)\n"; }; }
