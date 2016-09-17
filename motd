@@ -25,7 +25,7 @@ _license(){ echo "
 [ -n "$OZH_INSTALL" ] && oz hook set init/post motd _ozh_motd
 
 _ozh_motd(){ [ -f "$OZH/motd" ] && . "$OZH/motd" || {
-  printf "\n$bblue code.ulzq.de/ozh $byellow                $R                  ${byellow} $R   ${byellow}   $R  ${byellow}   $RN"
+  printf "$bblue code.ulzq.de/ozh $byellow                $R                  ${byellow} $R   ${byellow}   $R  ${byellow}   $RN"
   printf "$byellow                                  $R   ${byellow}   $R   ${byellow}    $R   ${byellow}   $R   ${byellow}   $R  ${byellow}   $RN"
   printf "$byellow                                  $R    ${byellow}  $R   ${byellow}   $R   ${byellow}    $R        ${byellow}   $RN"
   printf "$byellow                                   $R      ${byellow}   $R            ${byellow}   $R  ${byellow}   $RN"
