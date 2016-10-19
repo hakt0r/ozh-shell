@@ -23,9 +23,6 @@ _license(){ echo "
   http://www.gnu.org/licenses/gpl.html"; }
 
 _apt(){
-  #  type rehash       >/dev/null 2>&1 && rehash
-  #  type zol_gen_path >/dev/null 2>&1 && rehash; }
-
   local apt_available=false
   local apt_metalink=false
   local apt_aptitude=false
@@ -40,6 +37,10 @@ _apt(){
   which apt-metalink >/dev/null 2>/dev/null && { apt=apt-metalink; apt_metalink=true; }
   which sudo         >/dev/null 2>/dev/null && { test "$USER" = "root" || sudo=sudo; }
   if $apt_available; then
+    apt_geek_settings(){
+      echo 'Acquire::PDiffs "false";'   | sudo tee /etc/apt/apt.conf.d/99no-pdiffs
+      echo 'Acquire::Languages "none";' | sudo tee /etc/apt/apt.conf.d/99no-translations
+      echo 'Acquire::ForceIPv4 "true";' | sudo tee /etc/apt/apt.conf.d/99force-ipv4; }
     $apt_metalink && { run=apt-metalink; }
     eval "
       unset agi acs acp acsh adg agar agp agr agu agug asu asu
@@ -53,8 +54,7 @@ _apt(){
       agr(){ $sudo $run remove \$@; }
       agu(){ $sudo $run update \$@; }
       agug(){ $sudo $get update; $sudo $run upgrade \$@; }
-      asu(){ $sudo $get update \$@; }
-      asu(){ $sudo $get update; $sudo $run -y safe-upgrade \$@; }
+      asu(){ $sudo $get update; $sudo $get -y safe-upgrade \$@; }
     "; fi; }
 
 app_depend(){
