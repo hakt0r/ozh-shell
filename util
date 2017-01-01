@@ -54,7 +54,7 @@ flx_addshow(){ echo "          - $*" >> ~/.flexget/config.yml; }
 ftr(){ mv $1 $(echo $1| tr "$2" "$3" ); }
 ltrim(){ echo "$@"|busybox sed -e 's/^\s*//'; }
 mvtolower(){ for i in * ; do mv $i $(echo $i | tr '[A-Z]' '[a-z]') ; done; }
-ops(){ busybox grep$2 $1 | cut -c2-18 | uniq -c; }
+ops(){ busybox grep $2 $1 | cut -c2-18 | uniq -c; }
 rmcaps(){ DISPLAY=:0 xmodmap -e "remove lock = Caps_Lock"; }
 sedit(){ if [ -f $(which $1) ]; then vim $(which $1); else newscript $1; fi; }
 softmv(){ mv "$1" "$2"; ln -s "$2" "$1"; }

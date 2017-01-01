@@ -53,13 +53,13 @@ alias ll="ls -lh --color=auto"
 alias ls="ls --color=auto"      # people are used to it, so...
 lss(){ for i in $(ls); do du -ms $i; done | sort -n | awk '{ c=2; if($1+0>10)c=3; if($i+0>100)c=1; printf "\x1b[42;30;1;2m%40 s \x1b[0;1;2;330;4%im %8 i mb \x1b[0m\n",$2,c,$1}'; }
 alias lsi='sudo lsof -i -P'
-alias lsig='sudo lsof -i -P -n| grep'
+alias lsig='sudo lsof -i -P -n| grep '
 alias lsip='sudo lsof -i -P -n'
 alias mk=popd
 alias ozh-update='~/.ozh/update'
 alias ozsh-update='~/.ozsh/update'
 alias ppu='ps hax -o user | sort | uniq -c' #processes per user
-alias psg='ps ax |busybox grep -v "grep"|busybox grep -i'
+alias psg='ps ax |busybox grep -v "grep "|busybox grep -i'
 alias pwgen='pwgen -y'
 alias qsz='source ~/.zshrc 2>&1 > /dev/null'
 alias rot13="tr a-zA-Z n-za-mN-ZA-M"
@@ -91,15 +91,15 @@ if $OZ_SHELL_GLOBAL_ALIASES;then
   alias -g D="DISPLAY=:0.0"
   alias -g DN=/dev/null
   alias -g ED="export DISPLAY=:0.0"
-  alias -g EG='| egrep'
-  alias -g EG='|& egrep'
+  alias -g EG='| egrep '
+  alias -g EG='|& egrep '
   alias -g EH='|& head'
   alias -g EL='|& less'
   alias -g ELS='|& less -S'
   alias -g ET='|& tail'
   alias -g ETL='|& tail -20'
   alias -g F=' | fmt -'
-  alias -g G='| grep'
+  alias -g G='| grep '
   alias -g H='| head'
   alias -g HL='|& head -20'
   alias -g L="| less"
@@ -120,9 +120,9 @@ if $OZ_SHELL_GLOBAL_ALIASES;then
   alias -g US='| sort -u'
   alias -g VM=/var/log/messages
   alias -g X0='| xargs -0'
-  alias -g X0G='| xargs -0 egrep'
+  alias -g X0G='| xargs -0 egrep '
   alias -g X='| xargs'
-  alias -g XG='| xargs egrep'
+  alias -g XG='| xargs egrep '
 fi
 
 if $OZ_SHELL_SUFFIX_ALIASES;then
