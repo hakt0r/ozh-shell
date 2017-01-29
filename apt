@@ -43,11 +43,15 @@ _apt(){
       echo 'Acquire::ForceIPv4 "true";' | sudo tee /etc/apt/apt.conf.d/99force-ipv4; }
     $apt_metalink && { run=apt-metalink; }
     eval "
-      unset agi acs acp acsh adg agar agp agr agu agug asu asu
-      agi(){ $sudo $run install \$@; oz hook run apt/postinstall 'agi::done' \"\$@\"; }
+      unset agi acs acp acsh adg agar agp agr agu agug asu asu Agi afs afl
+      alu(){ $apt list --upgradable; }
+      agi(){ $sudo $run --no-install-recommends --no-install-suggests install \$@; oz hook run apt/postinstall 'agi::done' \"\$@\"; }
+      Agi(){ $sudo $run install \$@; oz hook run apt/postinstall 'agi::done' \"\$@\"; }
       acs(){ $run search \$@; }
+      acsh(){ apt-cache show \$@; }
       acp(){ apt-cache policy \$@; }
-      acsh(){ $run show \$@; }
+      afs(){ apt-file search \$@; }
+      afl(){ apt-file show \$@; }
       adg(){ $sudo $get update; $sudo $run dist-upgrade \$@; }
       agar(){ $sudo $run autoremove \$@; }
       agp(){ $sudo $run purge \$@; }
