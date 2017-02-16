@@ -24,7 +24,7 @@ _license(){ echo "
 
 [ -n "$OZH_INSTALL" ] && oz hook set init/post motd _ozh_motd
 
-_ozh_motd(){ [ -f "$OZH/motd" ] && . "$OZH/motd" || {
+_ozh_motd(){ [ -n "$OZH_BOOT" -a -f "$OZH/motd" ] && . "$OZH/motd" || {
   printf "$bblue code.ulzq.de/ozh $byellow                $R                  ${byellow} $R   ${byellow}   $R  ${byellow}   $RN"
   printf "$byellow                                  $R   ${byellow}   $R   ${byellow}    $R   ${byellow}   $R   ${byellow}   $R  ${byellow}   $RN"
   printf "$byellow                                  $R    ${byellow}  $R   ${byellow}   $R   ${byellow}    $R        ${byellow}   $RN"
@@ -34,4 +34,4 @@ _ozh_motd(){ [ -f "$OZH/motd" ] && . "$OZH/motd" || {
   # is_set cpu && printf "$bblack$white CPU $R \x1b[10G $(cpubar)\n"
   # is_set ctop && printf "$bblack$white TOP $R \x1b[10G $bblue ";ctop | tr '\n' ' '; printf " $RN"
   # printf "$bblack$white MEM $R \x1b[14G $bblue $(mtop | tr '\n' ' ') $RN"
-  printf "$(oz printenv)\n"; }; }
+  printf "$(oz printenv)\n"; } >&2; }
