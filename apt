@@ -38,9 +38,19 @@ _apt(){
   which sudo         >/dev/null 2>/dev/null && { test "$USER" = "root" || sudo=sudo; }
   if $apt_available; then
     apt_geek_settings(){
+      echo 'deb http://ftp.de.debian.org/debian/ testing main contrib non-free
+deb http://ftp.de.debian.org/debian/ unstable main contrib non-free
+deb http://ftp.de.debian.org/debian/ experimental main contrib non-free
+deb http://security.debian.org/debian-security stretch/updates main contrib non-free' | sudo tee /etc/apt/sources.list
+      busybox printf "Package: *\nPin: release l=Debian-Security\nPin-Priority: 1000" | sudo tee /etc/apt/preferences.d/security.pref
+      busybox printf "Package: *\nPin: release a=stable\nPin-Priority: 900" | sudo tee /etc/apt/preferences.d/stable.pref
+      busybox printf "Package: *\nPin: release a=testing\nPin-Priority: 750" | sudo tee /etc/apt/preferences.d/testing.pref
+      busybox printf "Package: *\nPin: release a=unstable\nPin-Priority: 50" | sudo tee /etc/apt/preferences.d/unstable.pref
+      echo "Package: *\nPin: release a=experimental\nPin-Priority: 1" | sudo tee /etc/apt/preferences.d/experimental.pref
       echo 'Acquire::PDiffs "false";'   | sudo tee /etc/apt/apt.conf.d/99no-pdiffs
       echo 'Acquire::Languages "none";' | sudo tee /etc/apt/apt.conf.d/99no-translations
-      echo 'Acquire::ForceIPv4 "true";' | sudo tee /etc/apt/apt.conf.d/99force-ipv4; }
+      echo 'Acquire::ForceIPv4 "true";' | sudo tee /etc/apt/apt.conf.d/99force-ipv4;
+      agu; }
     $apt_metalink && { run=apt-metalink; }
     eval "
       unset agi acs acp acsh adg agar agp agr agu agug asu asu Agi afs afl
@@ -52,13 +62,13 @@ _apt(){
       acp(){ apt-cache policy \$@; }
       afs(){ apt-file search \$@; }
       afl(){ apt-file show \$@; }
-      adg(){ $sudo $get update; $sudo $run dist-upgrade \$@; }
+      adg(){ $sudo $get update; $sudo $run upgrade \$@; }
       agar(){ $sudo $run autoremove \$@; }
       agp(){ $sudo $run purge \$@; }
       agr(){ $sudo $run remove \$@; }
       agu(){ $sudo $run update \$@; }
       agug(){ $sudo $get update; $sudo $run upgrade \$@; }
-      asu(){ $sudo $get update; $sudo $get -y safe-upgrade \$@; }
+      asu(){ $sudo $get update; $sudo $get -y upgrade \$@; }
     "; fi; }
 
 app_depend(){
