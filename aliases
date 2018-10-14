@@ -36,7 +36,7 @@ alias pico=$EDITOR
 alias vi=$EDITOR
 
 alias sct=systemctl
-alias uct=systemctl --user
+alias uct='systemctl --user'
 alias jct=journalctl
 alias cpv="rsync -poghb --backup-dir=/tmp/rsync -e /dev/null --progress --"
 alias cpv="rsync -proghb --backup-dir=/tmp/rsync -e /dev/null --progress --"
