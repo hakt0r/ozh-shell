@@ -35,97 +35,97 @@ alias nano=$EDITOR
 alias pico=$EDITOR
 alias vi=$EDITOR
 
-alias sct=systemctl
-alias uct='systemctl --user'
-alias jct=journalctl
+alias sct="sudo systemctl"
+alias uct="systemctl --user"
+alias jct="sudo journalctl"
 alias cpv="rsync -poghb --backup-dir=/tmp/rsync -e /dev/null --progress --"
 alias cpv="rsync -proghb --backup-dir=/tmp/rsync -e /dev/null --progress --"
-alias dbp='dpkg-buildpackage'
-alias df='df -h'
-alias du='du -h'
-alias duc='du -sch ./*'
-alias dus='du -h|sort -n'
-alias ez='vim ~/.zshrc'
+alias dbp="dpkg-buildpackage"
+alias df="df -h"
+alias du="du -h"
+alias duc="du -sch ./*"
+alias dus="du -h|sort -n"
+alias ez="vim ~/.zshrc"
 alias g=gnome-open
-alias ge='grep-excuses'
+alias ge="grep-excuses"
 alias Google="chromium-browser 'http://www.google.de/?q=$*'"
-alias hgrep='history | grep -i' #courtesey of the mighty gh0sts
+alias hgrep="history | grep -i' #courtesey of the mighty gh0st"
 alias l="ls -Fsh --color=auto"
 alias la="ls -lah --color=auto"
 alias ll="ls -lh --color=auto"
 alias ls="ls --color=auto"      # people are used to it, so...
 lss(){ for i in $(ls); do du -ms $i; done | sort -n | awk '{ c=2; if($1+0>10)c=3; if($i+0>100)c=1; printf "\x1b[42;30;1;2m%40 s \x1b[0;1;2;330;4%im %8 i mb \x1b[0m\n",$2,c,$1}'; }
-alias lsi='sudo lsof -i -P'
-alias lsig='sudo lsof -i -P -n| grep '
-alias lsip='sudo lsof -i -P -n'
+alias lsi="sudo lsof -i -P"
+alias lsig="sudo lsof -i -P -n| grep "
+alias lsip="sudo lsof -i -P -n"
 alias mk=popd
-alias ozh-update='~/.ozh/update'
-alias ozsh-update='~/.ozsh/update'
-alias ppu='ps hax -o user | sort | uniq -c' #processes per user
-alias psg='ps ax |busybox grep -v "grep "|busybox grep -i'
-alias pwgen='pwgen -y'
-alias qsz='source ~/.zshrc 2>&1 > /dev/null'
+alias ozh-update="~/.ozh/update"
+alias ozsh-update="~/.ozsh/update"
+alias ppu="ps hax -o user | sort | uniq -c' #processes per use"
+alias psg="ps ax |busybox grep -v "grep "|busybox grep -i"
+alias pwgen="pwgen -y"
+alias qsz="source ~/.zshrc 2>&1 > /dev/null"
 alias rot13="tr a-zA-Z n-za-mN-ZA-M"
-alias ssa='ss -ap' #its the politically uncorrect alias ;)
-alias ssh='ssh -4 -C'
-alias ssh='ssh -C'
-alias sst='ss -tpa'
-alias ssu='ss -upa'
-alias su='sudo -s'
-alias svi='svim'
-alias svim='sudo vim'
-alias sz='clear;source ~/.zshrc'
-alias tjc='tar jvc'
-alias tjx='tar jxvf'
-alias top3='ps -A --sort pcpu --format pcpu,comm |tail -n 3| sort -r'
-alias tzc='tar zvc'
-alias tzx='tar zxvf'
+alias ssa="ss -ap' #its the politically uncorrect alias ;"
+alias ssh="ssh -4 -C"
+alias ssh="ssh -C"
+alias sst="ss -tpa"
+alias ssu="ss -upa"
+alias su="sudo -s"
+alias svi="svim"
+alias svim="sudo vim"
+alias sz="clear;source ~/.zshrc"
+alias tjc="tar jvc"
+alias tjx="tar jxvf"
+alias top3="ps -A --sort pcpu --format pcpu,comm |tail -n 3| sort -r"
+alias tzc="tar zvc"
+alias tzx="tar zxvf"
 alias Web="chromium-browser"
-alias wtd='while true; do'
+alias wtd="while true; do"
 alias x=xdg-open
 
 if $OZ_SHELL_GLOBAL_ALIASES;then
   # some global aliases
-  alias -g .....='../../../..'
-  alias -g ....='../../..'
-  alias -g ...='../..'
-  alias -g C='| wc -l'
+  alias -g .....="../../../.."
+  alias -g ....="../../.."
+  alias -g ...="../.."
+  alias -g C="| wc -l"
   alias -g CA="2>&1 | cat -A"
   alias -g D="DISPLAY=:0.0"
   alias -g DN=/dev/null
   alias -g ED="export DISPLAY=:0.0"
-  alias -g EG='| egrep '
-  alias -g EG='|& egrep '
-  alias -g EH='|& head'
-  alias -g EL='|& less'
-  alias -g ELS='|& less -S'
-  alias -g ET='|& tail'
-  alias -g ETL='|& tail -20'
-  alias -g F=' | fmt -'
-  alias -g G='| grep '
-  alias -g H='| head'
-  alias -g HL='|& head -20'
+  alias -g EG="| egrep "
+  alias -g EG="|& egrep "
+  alias -g EH="|& head"
+  alias -g EL="|& less"
+  alias -g ELS="|& less -S"
+  alias -g ET="|& tail"
+  alias -g ETL="|& tail -20"
+  alias -g F=" | fmt -"
+  alias -g G="| grep "
+  alias -g H="| head"
+  alias -g HL="|& head -20"
   alias -g L="| less"
   alias -g LL="2>&1 | less"
-  alias -g LS='| less -S'
-  alias -g M='| more'
-  alias -g MM='| most'
+  alias -g LS="| less -S"
+  alias -g M="| more"
+  alias -g MM="| most"
   alias -g NE="2> /dev/null"
-  alias -g NS='| sort -n'
+  alias -g NS="| sort -n"
   alias -g NUL="> /dev/null 2>&1"
-  alias -g PIPE='|'
-  alias -g RNS='| sort -nr'
-  alias -g S='| sort'
+  alias -g PIPE="|"
+  alias -g RNS="| sort -nr"
+  alias -g S="| sort"
   alias -g Sk="*~(*.bz2|*.gz|*.tgz|*.zip|*.z)"
-  alias -g T='| tail'
-  alias -g TF='|tail -f'
-  alias -g TL='| tail -20'
-  alias -g US='| sort -u'
+  alias -g T="| tail"
+  alias -g TF="|tail -f"
+  alias -g TL="| tail -20"
+  alias -g US="| sort -u"
   alias -g VM=/var/log/messages
-  alias -g X0='| xargs -0'
-  alias -g X0G='| xargs -0 egrep '
-  alias -g X='| xargs'
-  alias -g XG='| xargs egrep '
+  alias -g X0="| xargs -0"
+  alias -g X0G="| xargs -0 egrep "
+  alias -g X="| xargs"
+  alias -g XG="| xargs egrep "
 fi
 
 if $OZ_SHELL_SUFFIX_ALIASES;then
@@ -141,8 +141,8 @@ fi
 alias "dug"="du -h . 2>/dev/null | busybox grep -P '^[0-9.]+G'" # du filtered for gigabytes
 alias "grepp"="busybox grep -P" # perl grep
 alias "version"="echo 0.1" # echoes the version
-alias 'htidy'='tidy -m -utf8 --indent auto --indent-spaces 4 --wrap 0'
-alias 'ytd'='youtube-dl --console-title --max-quality 5'
+alias 'htidy'="tidy -m -utf8 --indent auto --indent-spaces 4 --wrap 0"
+alias 'ytd'="youtube-dl --console-title --max-quality 5"
 
 newalias(){
   echo -n "Explain!: ";read HELP
