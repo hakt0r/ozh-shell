@@ -35,6 +35,8 @@ alias nano=$EDITOR
 alias pico=$EDITOR
 alias vi=$EDITOR
 
+hgrep(){ grep -ri $1 $HISTFILE; } #courtesey of the mighty gh0st"
+
 alias sct="sudo systemctl"
 alias uct="systemctl --user"
 alias jct="sudo journalctl"
@@ -49,7 +51,6 @@ alias ez="vim ~/.zshrc"
 alias g=gnome-open
 alias ge="grep-excuses"
 alias Google="chromium-browser 'http://www.google.de/?q=$*'"
-alias hgrep="history | grep -i' #courtesey of the mighty gh0st"
 alias l="ls -Fsh --color=auto"
 alias la="ls -lah --color=auto"
 alias ll="ls -lh --color=auto"
@@ -62,7 +63,7 @@ alias mk=popd
 alias ozh-update="~/.ozh/update"
 alias ozsh-update="~/.ozsh/update"
 alias ppu="ps hax -o user | sort | uniq -c' #processes per use"
-alias psg="ps ax |busybox grep -v "grep "|busybox grep -i"
+alias psg='ps ax |busybox grep -v "grep "|busybox grep -i'
 alias pwgen="pwgen -y"
 alias qsz="source ~/.zshrc 2>&1 > /dev/null"
 alias rot13="tr a-zA-Z n-za-mN-ZA-M"
