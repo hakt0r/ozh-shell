@@ -24,7 +24,7 @@ _license(){ echo "
 
 [ -n "$OZH_INSTALL" ] && _install_shell(){
   busybox grep -q "^shell/shell\$" "$OZH/libs" 2>/dev/null || echo "shell/shell" >> "$OZH/libs"
-  oz install +only +prefix shell zsh bash ash scm +lib abstracts aliases apt -only motd
+  oz install +only +prefix shell zsh bash ash scm +lib abstracts aliases apt util -only motd
   oz hook set precmd zzprompt 'PS1=$(_prompt_ozh|_prompt_escape)'
   _setup; }
 
