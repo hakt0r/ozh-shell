@@ -25,8 +25,8 @@ _license(){ echo "
 
 [ -n "$OZH_HELP" ] && {
   _blink_hdd_help(){ echo "[start,stop] spawns/kills hdd blinker. Uses sync so use with caution."; }
-  _ddv_help() echo "verbose dd with progressbar";; }
-  _ddvz_help() echo "verbose dd with progressbar and bzip2 output"; }
+  _ddv_help(){ echo "verbose dd with progressbar"; }
+  _ddvz_help(){ echo "verbose dd with progressbar and bzip2 output"; }
   _edtoscript_help(){ echo "[1:(file)name] redirects stdin to $HOME/bin/name and opens it in $EDITOR"; }
   _ftr_help(){ echo "[1:file 2:needle 3:replace] 'tr-moves' file"; }
   _ltrim_help(){ echo "[1:string] remove spaces on left"; }
@@ -48,8 +48,8 @@ _license(){ echo "
   _wkill_help(){ echo "kill and wait for PID\n  usage: wkill [-v] PID"; }
   _wpid_help(){ echo "wait for PID to finish\n  usage: wpid [-v] [-t TIMEOUT in s] PID"; }; }
 
-ddv() dd bs=4096000 if=$1 of=/dev/stdout | pv > $2; }
-ddvz() dd bs=4096000 if=$1 of=/dev/stdout | bzip2 | pv > $2; }
+ddv(){ dd bs=4096000 if=$1 of=/dev/stdout | pv > $2; }
+ddvz(){ dd bs=4096000 if=$1 of=/dev/stdout | bzip2 | pv > $2; }
 flx_addshow(){ echo "          - $*" >> ~/.flexget/config.yml; }
 ftr(){ mv $1 $(echo $1| tr "$2" "$3" ); }
 ltrim(){ echo "$@"|busybox sed -e 's/^\s*//'; }
@@ -174,6 +174,26 @@ edtoscript(){
   toscript $@
   $EDITOR $1
   rehash 2>/dev/null; }
+
+tcrypt(){
+  test -z "$1" || cd $1 || return 1
+  test -d "$1" || return 2
+  local f=$(mktemp)
+  test -f "$f" || return 3
+  tar -I pbzip2 -cvf $f.tar.bz2 -C $(dirname $(pwd)) $(basename $(pwd))
+  gpg --output $f.gpg --symmetric $f.tar.bz2
+  rm -f $f $f.tar.bz2;
+  mv $f.gpg $(dirname $(pwd))/$(basename $(pwd)).gpg
+  du -h $(dirname $(pwd))/$(basename $(pwd)).gpg; }
+
+tdcrypt(){
+  test -z "$1" && return 1
+  test -f "$1" || return 2
+  local f=$1; shift
+  cd $(dirname $f)
+  gpg --output $f.tar.bz2 --decrypt $f
+  tar -I pbzip2 -xvf $f.tar.bz2 $@
+  rm -f $f.tar.bz2; }
 
 e(){ #extract files
   local c e i
