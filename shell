@@ -62,7 +62,7 @@ oz default TERMINAL xterm
 oz default PAGER less
 
 _prompt_ozh(){ local pwd=$(pwd); printf "\
-$bblack$black$bold$(date +%H%M)\
+$bblack$white$bold$(date +%H%M)\
 $OZ_PROMPT_USER_COLOR$USER$white@$blue$(printf "$HOST"|head -c3)\
 $bblack$yellow$(dirname "$pwd"|tr \/ '\n'|cut -b 1|tr -d '\n')\
 $white$bgreen$(basename "$pwd")$R> "; }
