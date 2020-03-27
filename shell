@@ -65,7 +65,7 @@ _prompt_ozh(){ local pwd=$(pwd); printf "\
 $bblack$white$bold$(date +%H%M)\
 $OZ_PROMPT_USER_COLOR$USER$blue@$(printf "$HOST"|head -c3)\
 $bblack$yellow$(dirname "$pwd"|tr \/ '\n'|cut -b 1|tr -d '\n')\
-$white$bgreen$(basename "$pwd")$R "; }
+$white$bgreen$(basename "$pwd"|tail -c5)$R "; }
 _prompt_ozh_small(){ printf "$bblack$black$bold$(date +%H%M): $R "; }
 
 _prompt(){ oz hook run prompt; }
